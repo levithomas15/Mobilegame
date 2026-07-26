@@ -90,8 +90,13 @@ export class Input {
       this.touchActive = e.pointerType === 'touch' || this.touchActive;
       captureSafely(surface, e.pointerId);
 
-      const half = window.innerWidth * 0.45;
-      if (e.clientX < half && this.joyPointer === null) {
+      // Lauf-Joystick nur im unteren linken Bereich; darüber wird umgesehen.
+      // Die Grenze richtet sich nach dem Spielbild: im Hochformat endet es über
+      // dem Bedienfeld, und dort — nicht schon in der Bildmitte — beginnt die
+      // Laufzone. Live gemessen, damit Drehen des Geräts automatisch passt.
+      const inJoystickZone = e.clientX < window.innerWidth * 0.45
+        && e.clientY > this._joystickZoneTop();
+      if (inJoystickZone && this.joyPointer === null) {
         this.joyPointer = e.pointerId;
         this.joyOrigin.x = e.clientX;
         this.joyOrigin.y = e.clientY;
@@ -140,6 +145,18 @@ export class Input {
     };
     surface.addEventListener('pointerup', end);
     surface.addEventListener('pointercancel', end);
+  }
+
+  /**
+   * Obere Kante der Laufzone. Sitzt das Spielbild nur im oberen Teil des
+   * Fensters (Hochformat mit Bedienfeld), beginnt die Zone direkt unter dem
+   * Bild — sonst im unteren Drittel des Bildes.
+   */
+  _joystickZoneTop() {
+    const canvas = this.root.querySelector('#game-canvas');
+    const rect = canvas.getBoundingClientRect();
+    const deckBelow = rect.bottom < window.innerHeight - 2;
+    return deckBelow ? rect.bottom : rect.top + rect.height * 0.35;
   }
 
   _updateKnob(x, y) {

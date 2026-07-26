@@ -34,6 +34,9 @@ html, body {
 
 #touch-layer { position: absolute; inset: 0; z-index: 1; }
 
+/* Nur im Hochformat gebraucht (siehe unten). */
+#control-deck { display: none; }
+
 #hud { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 #hud button { pointer-events: auto; }
 
@@ -237,26 +240,7 @@ html, body {
   display: flex; flex-direction: column; gap: 6px;
 }
 .controls-help b { color: var(--accent); opacity: 0.9; }
-
-/* ---------- Querformat-Hinweis ---------- */
-#rotate-hint {
-  position: absolute; inset: 0; z-index: 20; display: none;
-  align-items: center; justify-content: center; text-align: center;
-  background: #10141a; font-size: 15px; padding: 24px;
-}
-.rotate-icon {
-  width: 46px; height: 74px; margin: 0 auto 16px;
-  border: 3px solid var(--accent); border-radius: 8px;
-  animation: rotate-nudge 1.8s ease-in-out infinite;
-}
-@keyframes rotate-nudge {
-  0%, 45% { transform: rotate(0deg); }
-  70%, 100% { transform: rotate(90deg); }
-}
-/* Nur auf echten Handys im Hochformat stören — nicht auf schmalen Desktops. */
-@media (orientation: portrait) and (pointer: coarse) and (max-height: 900px) {
-  #rotate-hint { display: flex; }
-}
+.hint-orientation { opacity: 0.75; }
 
 /* Enge Geräte: HUD etwas kompakter, damit nichts überlappt. */
 @media (max-height: 420px) {
@@ -265,4 +249,107 @@ html, body {
   .btn-build { width: 84px; height: 38px; font-size: 12px; }
   #ammo-panel { bottom: calc(126px + var(--safe-b)); }
   #health-panel { width: 160px; }
+}
+
+/* ---------- Hochformat ----------
+   Bei einem Seitenverhältnis um 0,46 lässt sich nicht gleichzeitig eine
+   brauchbare waagerechte Sicht und ein ruhiges Bild erreichen: ein festes
+   senkrechtes Blickfeld macht die Sicht seitlich zum Schlitz, ein aus der
+   Waagerechten abgeleitetes füllt über die Hälfte des Bildes mit Himmel.
+   Deshalb wird das Spiel hochkant nur im oberen Teil gerendert — das ergibt
+   ein Seitenverhältnis um 0,75 — und darunter sitzt ein Bedienfeld. */
+@media (orientation: portrait) {
+  #game-canvas {
+    height: 62%;
+    bottom: auto;
+  }
+
+  #control-deck {
+    display: block;
+    position: absolute;
+    left: 0; right: 0;
+    top: 62%; bottom: 0;
+    background: linear-gradient(180deg, #1b222b, #12171e);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Die freie Ecke unten links ist die Laufzone. Ohne Markierung findet man sie
+     nicht — der Joystick erscheint erst beim Berühren. */
+  #control-deck::before {
+    content: "";
+    position: absolute;
+    left: 34px;
+    bottom: calc(28px + var(--safe-b));
+    width: 116px; height: 116px;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+  }
+  #control-deck::after {
+    content: "LAUFEN";
+    position: absolute;
+    left: 34px;
+    bottom: calc(80px + var(--safe-b));
+    width: 116px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Fadenkreuz und Meldungen richten sich nach dem Spielbild, nicht nach dem
+     Fenster — das Fadenkreuz muss exakt auf der Zielachse der Kamera sitzen,
+     also in der Mitte des Canvas (62% / 2 = 31%). */
+  #crosshair { top: 31%; }
+  #banner { top: 26%; }
+
+  #health-panel {
+    top: calc(58px + var(--safe-t));
+    left: calc(12px + var(--safe-l));
+    right: calc(12px + var(--safe-r));
+    width: auto;
+  }
+
+  #perf {
+    top: calc(16px + var(--safe-t));
+    left: calc(14px + var(--safe-l));
+    right: auto;
+    text-align: left;
+  }
+
+  /* Bedienfeld von oben nach unten: Munition und Bauen, dann Waffenleiste,
+     unten die Aktionsknöpfe. Die untere linke Ecke bleibt frei — dort liegt
+     der Daumen für den Lauf-Joystick. */
+  #ammo-panel {
+    right: calc(12px + var(--safe-r));
+    bottom: calc(250px + var(--safe-b));
+  }
+
+  #build-controls {
+    left: calc(12px + var(--safe-l));
+    bottom: calc(250px + var(--safe-b));
+    flex-direction: row;
+  }
+
+  #hotbar {
+    top: auto;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(192px + var(--safe-b));
+  }
+
+  .btn-build { width: 84px; height: 46px; }
+  .btn-small { width: 64px; height: 44px; }
+  .btn-fire { width: 96px; height: 96px; }
+}
+
+/* Sehr schmale Hochformat-Geräte: Bedienelemente etwas zusammenrücken. */
+@media (orientation: portrait) and (max-width: 380px) {
+  .btn-build { width: 74px; height: 42px; font-size: 12px; }
+  .btn-small { width: 58px; height: 40px; font-size: 11px; }
+  .btn-fire { width: 86px; height: 86px; }
+  .slot { width: 42px; height: 38px; }
+  #hotbar { bottom: calc(176px + var(--safe-b)); }
+  #build-controls { bottom: calc(228px + var(--safe-b)); }
+  #ammo-panel { bottom: calc(228px + var(--safe-b)); }
 }

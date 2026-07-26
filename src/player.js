@@ -14,6 +14,28 @@ import { planPlacement } from './building.js';
 const HIP_POS = new THREE.Vector3(0.145, -0.16, -0.52);
 const ADS_POS = new THREE.Vector3(0, -0.078, -0.44);
 
+const DEG = Math.PI / 180;
+// Hochformat: `PerspectiveCamera.fov` ist der *senkrechte* Winkel. Bei einem
+// hohen, schmalen Bild würde ein fester senkrechter Wert die waagerechte Sicht
+// auf einen Sehschlitz zusammenziehen. Deshalb wird im Hochformat andersherum
+// gerechnet — aus einem waagerechten Zielwinkel — und nach oben begrenzt,
+// damit es nicht zur Fischaugenoptik wird.
+// Mit dem Bedienfeld liegt das Seitenverhältnis hochkant bei etwa 0,75 statt
+// 0,46. Ein waagerechtes Ziel von 64° ergibt dort rund 80° senkrecht — also
+// praktisch derselbe senkrechte Winkel wie im Querformat (78°). Waagerecht
+// sieht man im Querformat entsprechend mehr, weil das Bild breiter ist; das ist
+// das übliche Verhalten und keine Bevorzugung einer Lage. Die Obergrenze greift
+// nur noch bei extrem hohen Geräten.
+const PORTRAIT_H_FOV = 64;
+const PORTRAIT_V_FOV_MAX = 92;
+
+/** Grund-Blickwinkel (senkrecht, in Grad) für ein Seitenverhältnis. */
+export function baseFov(aspect) {
+  if (aspect >= 1) return FOV; // Querformat bleibt unverändert
+  const vertical = (2 * Math.atan(Math.tan((PORTRAIT_H_FOV / 2) * DEG) / aspect)) / DEG;
+  return Math.min(vertical, PORTRAIT_V_FOV_MAX);
+}
+
 export class Player extends Actor {
   constructor(camera) {
     super(TEAM_PLAYER);
@@ -102,7 +124,8 @@ export class Player extends Actor {
     camera.rotation.x = -this.pitch;
     camera.rotation.z = roll;
 
-    const targetFov = this.ads ? FOV * this.loadout.def.adsZoom : FOV;
+    const base = baseFov(camera.aspect);
+    const targetFov = this.ads ? base * this.loadout.def.adsZoom : base;
     if (Math.abs(camera.fov - targetFov) > 0.05) {
       camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 14, dt);
       camera.updateProjectionMatrix();

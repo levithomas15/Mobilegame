@@ -7,7 +7,7 @@ import {
 } from './config.js';
 import { World } from './world.js';
 import { Building, planPlacement } from './building.js';
-import { Player } from './player.js';
+import { Player, baseFov } from './player.js';
 import { Bot } from './bot.js';
 import { Hud } from './hud.js';
 import { Input } from './input.js';
@@ -94,18 +94,25 @@ class Game {
   _requestImmersive() {
     const el = document.documentElement;
     if (window.matchMedia('(pointer: coarse)').matches) {
+      // Bewusst keine Orientierungssperre: das Spiel läuft in beiden Lagen,
+      // und eine Sperre würde Hochformat-Spielern das Bild verdrehen.
       el.requestFullscreen?.().catch(() => {});
-      screen.orientation?.lock?.('landscape').catch(() => {});
     } else {
       this.canvas.requestPointerLock?.();
     }
   }
 
   _resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    // Maßgeblich ist die Größe des Canvas, nicht die des Fensters: im
+    // Hochformat nimmt das Spielbild nur den oberen Teil ein, darunter liegt
+    // das Bedienfeld.
+    const w = this.canvas.clientWidth || window.innerWidth;
+    const h = this.canvas.clientHeight || window.innerHeight;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / Math.max(h, 1);
+    // Beim Drehen des Geräts den neuen Blickwinkel sofort übernehmen; sonst
+    // würde die Kamera sichtbar dorthin zoomen statt einfach richtig zu stehen.
+    if (!this.player.ads) this.camera.fov = baseFov(this.camera.aspect);
     this.camera.updateProjectionMatrix();
   }
 

@@ -17,9 +17,9 @@ werden — das kann nur der Repo-Besitzer, ein Workflow darf es nicht:
 Danach veröffentlicht der Workflow `.github/workflows/pages.yml` bei jedem Push
 auf den Standard-Branch automatisch neu.
 
-Am Handy: die Adresse in Safari/Chrome öffnen, Gerät ins Querformat drehen und
-über „Teilen → Zum Home-Bildschirm" ablegen. Dann startet das Spiel im Vollbild
-wie eine App.
+Am Handy: die Adresse in Safari/Chrome öffnen und über „Teilen → Zum
+Home-Bildschirm" ablegen. Dann startet das Spiel im Vollbild wie eine App.
+**Quer- und Hochformat funktionieren beide** — das HUD richtet sich selbst aus.
 
 ## Lokal starten
 
@@ -42,7 +42,7 @@ brauchen HTTP.
 
 | Aktion | Bedienung |
 |---|---|
-| Laufen | Linke Bildschirmhälfte wischen (virtueller Joystick erscheint) |
+| Laufen | Unten links wischen (virtueller Joystick erscheint) |
 | Sprinten | Joystick bis zum Anschlag nach vorn |
 | Umsehen | Rechte Bildschirmhälfte wischen |
 | Schießen | Großer Knopf unten rechts |
@@ -52,6 +52,15 @@ brauchen HTTP.
 
 Laufen, Umsehen und Schießen funktionieren gleichzeitig — die Eingabe verfolgt
 jeden Finger einzeln.
+
+**Hochformat.** Hochkant wird das Spiel nur im oberen Teil des Bildschirms
+gerendert, darunter liegt ein Bedienfeld; die Laufzone ist dort unten links
+markiert. Grund ist das Seitenverhältnis: `PerspectiveCamera.fov` ist der
+*senkrechte* Winkel, und bei einem Bild von 0,46 Breite zu Höhe wird die Sicht
+entweder seitlich zum Schlitz oder besteht zur Hälfte aus Himmel. Mit dem
+Bedienfeld liegt das Bild bei etwa 0,75 und trägt 64° waagerecht bei 80°
+senkrecht — praktisch derselbe senkrechte Winkel wie im Querformat.
+Beim Drehen stellt sich alles selbst um.
 
 **PC** (zum Testen)
 

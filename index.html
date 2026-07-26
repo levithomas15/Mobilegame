@@ -28,6 +28,11 @@
   <div id="joystick" aria-hidden="true"><div id="joystick-knob"></div></div>
 
   <div id="hud">
+    <!-- Bedienfeld unter dem Spielbild. Nur im Hochformat sichtbar: dort wird
+         das Spiel nicht über die volle Höhe gerendert, damit das Bild nicht zu
+         einem hohen Schlitz mit viel Himmel wird. -->
+    <div id="control-deck"></div>
+
     <div id="crosshair"><span class="ch ch-t"></span><span class="ch ch-b"></span><span class="ch ch-l"></span><span class="ch ch-r"></span><span id="hitmarker"></span></div>
 
     <div id="scoreboard">
@@ -95,16 +100,10 @@
       <button id="start-button">Spiel starten</button>
 
       <div class="controls-help">
-        <div><b>Handy</b> — links wischen: laufen (bis zum Anschlag = sprinten) · rechts wischen: umsehen · Buttons: schießen, springen, zielen, bauen</div>
+        <div><b>Handy</b> — unten links wischen: laufen (bis zum Anschlag = sprinten) · rechts wischen: umsehen · Buttons: schießen, springen, zielen, bauen</div>
         <div><b>PC</b> — WASD laufen · Maus umsehen · Linksklick schießen · Rechtsklick zielen · Leertaste springen · Shift sprinten · Q Wand · E Rampe · R nachladen · 1/2/3 Waffe</div>
+        <div class="hint-orientation">Quer- und Hochformat werden beide unterstützt — das HUD richtet sich selbst danach aus.</div>
       </div>
-    </div>
-  </div>
-
-  <div id="rotate-hint">
-    <div>
-      <div class="rotate-icon"></div>
-      Bitte das Gerät ins Querformat drehen
     </div>
   </div>
 </div>
