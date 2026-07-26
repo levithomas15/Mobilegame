@@ -22,12 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Setzt voraus, dass Pages im Repo einmalig auf "GitHub Actions" gestellt
+      # wurde (Settings -> Pages -> Source). Das Erstanschalten per Workflow ist
+      # nicht möglich: der Actions-Token darf keine Pages-Site anlegen
+      # ("Resource not accessible by integration"), das darf nur der Besitzer.
+      # Danach läuft jede Veröffentlichung automatisch über diesen Workflow.
       - name: GitHub Pages einrichten
         uses: actions/configure-pages@v5
-        with:
-          # Aktiviert Pages beim ersten Lauf selbst, damit niemand den
-          # Schalter in den Repo-Einstellungen suchen muss.
-          enablement: true
 
       # Nur die Dateien hochladen, die die Seite tatsächlich braucht.
       # Kein .git, kein Workflow-Ordner.

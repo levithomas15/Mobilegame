@@ -4,7 +4,24 @@ Ein 3D-Shooter im Stil von *1v1.lol*: Wände und Rampen bauen, darüber klettern
 den Gegner ausschalten. Läuft direkt im Browser auf dem Handy — keine App, kein
 Store, kein Build-Schritt. Gegner ist ein Bot, also komplett offline spielbar.
 
-## Starten
+## Spielen
+
+Online: **https://levithomas15.github.io/Mobilegame/**
+
+Damit diese Adresse funktioniert, muss GitHub Pages einmalig eingeschaltet
+werden — das kann nur der Repo-Besitzer, ein Workflow darf es nicht:
+
+1. `Settings` → `Pages`
+2. Unter **Source**: `GitHub Actions` wählen
+
+Danach veröffentlicht der Workflow `.github/workflows/pages.yml` bei jedem Push
+auf den Standard-Branch automatisch neu.
+
+Am Handy: die Adresse in Safari/Chrome öffnen, Gerät ins Querformat drehen und
+über „Teilen → Zum Home-Bildschirm" ablegen. Dann startet das Spiel im Vollbild
+wie eine App.
+
+## Lokal starten
 
 Es reicht ein beliebiger statischer Webserver im Projektordner:
 
