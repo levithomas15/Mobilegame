@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [claude/mobile-games-recommendations-1kq7d6]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Läuft immer nur ein Deployment; ein neuer Push wartet, statt den laufenden
+# abzubrechen, damit die veröffentlichte Seite nie halb aktualisiert ist.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: GitHub Pages einrichten
+        uses: actions/configure-pages@v5
+        with:
+          # Aktiviert Pages beim ersten Lauf selbst, damit niemand den
+          # Schalter in den Repo-Einstellungen suchen muss.
+          enablement: true
+
+      # Nur die Dateien hochladen, die die Seite tatsächlich braucht.
+      # Kein .git, kein Workflow-Ordner.
+      - name: Seite zusammenstellen
+        run: |
+          mkdir -p _site
+          cp index.html styles.css .nojekyll _site/
+          cp -r src vendor _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
