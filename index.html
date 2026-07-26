@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1b2027">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Build &amp; Blast — 1v1 Arena</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b2027'/%3E%3Cpath d='M6 22h20L6 22z' stroke='%234ea8ff' stroke-width='3'/%3E%3Cpath d='M8 22 20 10' stroke='%234ea8ff' stroke-width='3' fill='none'/%3E%3Ccircle cx='23' cy='11' r='4' fill='%23ff6b57'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Fängt alle Wisch-Gesten ab; Buttons liegen darüber. -->
+  <div id="touch-layer"></div>
+
+  <div id="joystick" aria-hidden="true"><div id="joystick-knob"></div></div>
+
+  <div id="hud">
+    <div id="crosshair"><span class="ch ch-t"></span><span class="ch ch-b"></span><span class="ch ch-l"></span><span class="ch ch-r"></span><span id="hitmarker"></span></div>
+
+    <div id="scoreboard">
+      <span class="score-side score-player"><b id="score-player">0</b><small>DU</small></span>
+      <span class="score-sep">:</span>
+      <span class="score-side score-bot"><b id="score-bot">0</b><small>BOT</small></span>
+    </div>
+
+    <div id="health-panel">
+      <div class="hp-row">
+        <span class="hp-label">HP</span>
+        <span id="health-value">100</span>
+      </div>
+      <div class="hp-bar"><div id="health-fill"></div></div>
+      <div class="hp-row hp-enemy">
+        <span class="hp-label">GEGNER</span>
+        <span id="enemy-health-value">100</span>
+      </div>
+      <div class="hp-bar hp-bar-enemy"><div id="enemy-health-fill"></div></div>
+    </div>
+
+    <div id="ammo-panel">
+      <div id="weapon-name">Sturmgewehr</div>
+      <div id="ammo-count"><b id="ammo-mag">30</b><span id="ammo-sep">/</span><small id="ammo-max">30</small></div>
+      <div id="reload-hint" class="hidden">Nachladen…</div>
+    </div>
+
+    <div id="hotbar">
+      <button class="slot" data-action="weapon:0"><b>1</b><span>AR</span></button>
+      <button class="slot" data-action="weapon:1"><b>2</b><span>SG</span></button>
+      <button class="slot" data-action="weapon:2"><b>3</b><span>SR</span></button>
+    </div>
+
+    <div id="build-controls">
+      <button class="btn btn-build" data-action="wall"><span class="glyph glyph-wall"></span>Wand</button>
+      <button class="btn btn-build" data-action="ramp"><span class="glyph glyph-ramp"></span>Rampe</button>
+    </div>
+
+    <div id="action-controls">
+      <button class="btn btn-small" data-action="ads">Zielen</button>
+      <button class="btn btn-small" data-action="reload">Laden</button>
+      <button class="btn btn-small" data-action="jump">Sprung</button>
+      <button class="btn btn-fire" data-action="fire"><span class="fire-ring"></span></button>
+    </div>
+
+    <div id="banner" class="hidden"></div>
+    <div id="damage-flash"></div>
+    <div id="perf">–</div>
+  </div>
+
+  <div id="start-screen">
+    <div class="panel">
+      <h1>Build &amp; Blast</h1>
+      <p class="tagline">1v1-Arena gegen den Bot — bauen, klettern, treffen.</p>
+
+      <div class="field">
+        <label>Schwierigkeit</label>
+        <div class="choices" id="difficulty-choices">
+          <button data-difficulty="easy">Leicht</button>
+          <button data-difficulty="normal" class="selected">Normal</button>
+          <button data-difficulty="hard">Schwer</button>
+        </div>
+      </div>
+
+      <button id="start-button">Spiel starten</button>
+
+      <div class="controls-help">
+        <div><b>Handy</b> — links wischen: laufen (bis zum Anschlag = sprinten) · rechts wischen: umsehen · Buttons: schießen, springen, zielen, bauen</div>
+        <div><b>PC</b> — WASD laufen · Maus umsehen · Linksklick schießen · Rechtsklick zielen · Leertaste springen · Shift sprinten · Q Wand · E Rampe · R nachladen · 1/2/3 Waffe</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="rotate-hint">
+    <div>
+      <div class="rotate-icon"></div>
+      Bitte das Gerät ins Querformat drehen
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
